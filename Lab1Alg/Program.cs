@@ -23,7 +23,7 @@ class Program
     static void Main(string[] args)
     {
         List<List<(int x, int y)>> paths = new List<List<(int x, int y)>>();
-        int n = 10, m = 10, entriesCount = 1;
+        int n = 10, m = 10, entriesCount = 3;
         int[] entries = { 1, 4, 7, 0, 0, 0, 0, 0, 0, 0 }, exits = { 2, 5, 9, 0, 0, 0, 0, 0, 0, 0 };
         int[,] maze =
         {
