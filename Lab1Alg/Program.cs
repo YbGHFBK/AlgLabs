@@ -24,7 +24,7 @@ class Program
     {
         List<List<(int x, int y)>> paths = new List<List<(int x, int y)>>();
         int n = 10, m = 10, entriesCount = 1;
-        int[] entries = { 1, 4, 7 }, exits = { 2, 5, 9 };
+        int[] entries = { 1, 4, 7, 0, 0, 0, 0, 0, 0, 0 }, exits = { 2, 5, 9, 0, 0, 0, 0, 0, 0, 0 };
         int[,] maze =
         {
             {1, 0, 1, 1, 0, 1, 1, 0, 1, 1 },
