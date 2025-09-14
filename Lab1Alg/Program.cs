@@ -129,5 +129,5 @@ class Program
         return path;
     }
 
-    static bool InBounds(int x, int y, int w, int h) => x >= 0 && x < w && y >= 0 && y < h;
-}   
+    static bool InBounds(int x, int y, int w, int h) => x >= 0 && x < w && y >= 0 && y < h;//gggggggg
+}
