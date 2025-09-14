@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 public class MazeGenerationResult
@@ -21,6 +22,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        List<List<(int x, int y)>> paths = new List<List<(int x, int y)>>();
         int n = 10, m = 10, entriesCount = 1;
         int[] entries = { 1, 4, 7 }, exits = { 2, 5, 9 };
         int[,] maze =
@@ -71,7 +73,7 @@ class Program
                     }
                     for (int i = 0; i < entriesCount; i++)
                     {
-                        exits[i] = mgr.TopXs[i];
+                        exits[i] = mgr.BottomXs[i];
                     }
                     maze = mgr.Grid;
                     break;
@@ -125,6 +127,37 @@ class Program
         {
             List<(int x, int y)> path = FindShortestPath(maze, (x: entries[i], y: 0), (x: exits[i], y: m - 1));
             PrintPathedMaze(maze, m, n, path);
+            paths.Add(path);
+        }
+
+        bool canDoRef = true;
+
+        if (entriesCount == 1)
+        {
+            Console.WriteLine("Всего один выход. Мало для проверки условия.");
+        }
+        else
+        {
+            for (int i = 0; i < entriesCount - 1; i++)
+            {
+                for (int j = i + 1; j < entriesCount; j++)
+                {
+
+                    for (int k = 0;  k < paths[i].Count; k++)
+                    {
+                        for (int h = 0; h < paths[j].Count; h++)
+                        {
+                            if (paths[i][k].x == paths[j][h].x && paths[i][k] == paths[j][h])
+                            {
+                                canDoRef = false;
+                                Console.WriteLine("Пути " + (i + 1) + " и " + (j + 1) + " пересекаются в точке (" + paths[i][k].x + ", " + paths[i][k].y + ").");
+                            }
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine("Условие " + (canDoRef ? "выполняется" : "не выпоняется"));
         }
 
         //foreach (var p in path) Console.WriteLine($"({p.x},{p.y})");
