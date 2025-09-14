@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 public class MazeGenerationResult
@@ -20,7 +22,7 @@ class Program
     static void Main(string[] args)
     {
         int n = 10, m = 10, entriesCount = 1;
-        int entry = 1, exit = 9;
+        int[] entries = { 1, 4, 7 }, exits = { 2, 5, 9 };
         int[,] maze =
         {
             {1, 0, 1, 1, 0, 1, 1, 0, 1, 1 },
@@ -59,13 +61,57 @@ class Program
                     Console.Write("Введите количество входов-выходов: ");
                     entriesCount = int.Parse(Console.ReadLine());
 
-                    MazeGenerationResult  mgr = GenerateMaze(n, m, entriesCount);
-                    if (n % 2 == 0) n++; 
-                    if (m % 2 == 0) m++; 
+                    MazeGenerationResult mgr = GenerateMaze(n, m, entriesCount);
+                    if (n % 2 == 0) n++;
+                    if (m % 2 == 0) m++;
 
-                    entry = mgr.TopXs[0];
-                    exit = mgr.BottomXs[0];
+                    for (int i = 0; i < entriesCount; i++)
+                    {
+                        entries[i] = mgr.TopXs[i];
+                    }
+                    for (int i = 0; i < entriesCount; i++)
+                    {
+                        exits[i] = mgr.TopXs[i];
+                    }
                     maze = mgr.Grid;
+                    break;
+                case 2:
+                    cycleExit = true;
+
+                    Console.Write("Введите длину лабиринта: ");
+                    n = int.Parse(Console.ReadLine());
+                    Console.Write("Введите ширину лабиринта: ");
+                    m = int.Parse(Console.ReadLine());
+
+                    for (int i = 0; i < n; i++)
+                    {
+                        for (int j = 0; j < n; j++)
+                        {
+                            Console.Write("Введите элемент [" + i + "][" + j + "]:");
+                            maze[i, j] = int.Parse(Console.ReadLine());
+                            PrintMaze(maze, i+1, m, j);
+                        }
+                    }
+
+                    int counter = 0;
+
+                    for (int i = 0; i < m; i++)
+                    {
+                        if (maze[0, i] == 0) entries[counter++] = i;
+                    }
+
+                    counter = 0;
+
+                    for (int i = 0; i < m; i++)
+                    {
+                        if (maze[m-1, i] == 0)
+                        {
+                            exits[counter++] = i;
+                        }
+                    }
+
+                    entriesCount = counter;
+
                     break;
                 case 3:
                     cycleExit = true;
@@ -75,19 +121,22 @@ class Program
 
         PrintMaze(maze, m, n);
 
-        List<(int x, int y)> path = FindShortestPath(maze, (x: entry, y: 0), (x: exit, y: m-1));
-
-        PrintPathedMaze(maze, m, n, path);
+        for (int i = 0; i < entriesCount; i++)
+        {
+            List<(int x, int y)> path = FindShortestPath(maze, (x: entries[i], y: 0), (x: exits[i], y: m - 1));
+            PrintPathedMaze(maze, m, n, path);
+        }
 
         //foreach (var p in path) Console.WriteLine($"({p.x},{p.y})");
     }
 
-    static void PrintMaze(int[,] grid, int n, int m)
+    static void PrintMaze(int[,] grid, int n, int m, int stop = -1)
     {
         for (int i = 0; i < n; i++)
         {
             for (int j = 0; j < m; j++)
             {
+                if (stop != -1 && i == n-1 && j > stop) break;
                 if (grid[i, j] == 1) Console.Write("██");
                 else Console.Write("  ");
             }
