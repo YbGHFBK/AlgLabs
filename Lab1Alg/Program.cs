@@ -24,7 +24,7 @@ class Program
     {
         List<List<(int x, int y)>> paths = new List<List<(int x, int y)>>();
         int n = 10, m = 10, entriesCount = 3;
-        int[] entries = { 1, 4, 7, 0, 0, 0, 0, 0, 0, 0 }, exits = { 2, 5, 9, 0, 0, 0, 0, 0, 0, 0 };
+        int[] entries = { 1, 7, 4, 0, 0, 0, 0, 0, 0, 0 }, exits = { 5, 2, 9, 0, 0, 0, 0, 0, 0, 0 };
         int[,] maze =
         {
             {1, 0, 1, 1, 0, 1, 1, 0, 1, 1 },
@@ -123,6 +123,14 @@ class Program
 
         PrintMaze(maze, m, n);
 
+        int[] orderEntries = sortEntries(entries, entriesCount);
+        int[] orderExits = sortEntries(exits, entriesCount);
+
+        for(int i = 0; i < entriesCount; i++)
+        {
+            Console.WriteLine(orderExits[i]);
+        }
+
         for (int i = 0; i < entriesCount; i++)
         {
             List<(int x, int y)> path = FindShortestPath(maze, (x: entries[i], y: 0), (x: exits[i], y: m - 1));
@@ -157,7 +165,18 @@ class Program
                 }
             }
 
-            Console.WriteLine("Условие " + (canDoRef ? "выполняется" : "не выпоняется"));
+            if (canDoRef)
+            {
+                Console.WriteLine("Условие выполняется. Входы-выходы:");
+                for (int i = 0; i < entriesCount; i++)
+                {
+                    Console.WriteLine("x(" + orderEntries[i] + ")" + entries[orderEntries[i]] + " - y(" + orderExits[i] + ")" + exits[orderExits[i]]);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Условие не выпоняется");
+            }
         }
 
         //foreach (var p in path) Console.WriteLine($"({p.x},{p.y})");
@@ -169,7 +188,7 @@ class Program
         {
             for (int j = 0; j < m; j++)
             {
-                if (stop != -1 && i == n-1 && j > stop) break;
+                if (stop != -1 && i == n - 1 && j > stop) { Console.WriteLine("stopped");  break;}
                 if (grid[i, j] == 1) Console.Write("██");
                 else Console.Write("  ");
             }
@@ -502,5 +521,53 @@ class Program
             int j = rng.Next(i + 1);
             int tmp = list[i]; list[i] = list[j]; list[j] = tmp;
         }
+    }
+
+    static void swapEntries(int[] entries, int firstIdx, int lastIdx)
+    {
+        int buf = entries[firstIdx];
+        entries[firstIdx] = entries[lastIdx];
+        entries[lastIdx] = buf;
+    }
+
+    static int[] sortEntries(int[] entries, int entriesCount)
+    {
+        int[] order = new int[entriesCount];
+        
+        for (int i = 0; i < entriesCount; i++)
+        {
+            order[i] = i;
+        }
+
+        for (int i = 0; i < entriesCount; i++)
+        {
+            Console.Write(order[i]);
+        }
+        Console.WriteLine();
+
+        for (int i = 0; i < entriesCount - 1; i++)
+        {
+            bool needToSwap = false;
+            int swapIdx = i;
+            int min = entries[i];
+            for (int j = i; j < entriesCount; j++)
+            {
+                if (entries[j] < min)
+                {
+                    min = entries[j];
+                    swapIdx = j;
+                    needToSwap = true;
+                }
+            }
+
+            if (needToSwap)
+            {
+                order[i] = swapIdx;
+                order[swapIdx] = i;
+
+                swapEntries(entries, i, swapIdx);
+            }
+        }
+        return order;
     }
 }
