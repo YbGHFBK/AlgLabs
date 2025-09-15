@@ -91,7 +91,7 @@ class Program
                         {
                             Console.Write("Введите элемент [" + i + "][" + j + "]:");
                             maze[i, j] = int.Parse(Console.ReadLine());
-                            PrintMaze(maze, i+1, m, j);
+                            PrintMaze(maze, i+1, m, entries, exits, j);
                         }
                     }
 
@@ -121,15 +121,10 @@ class Program
             }
         }
 
-        PrintMaze(maze, m, n);
+        PrintMaze(maze, m, n, entries, exits);
 
         int[] orderEntries = sortEntries(entries, entriesCount);
         int[] orderExits = sortEntries(exits, entriesCount);
-
-        for(int i = 0; i < entriesCount; i++)
-        {
-            Console.WriteLine(orderExits[i]);
-        }
 
         for (int i = 0; i < entriesCount; i++)
         {
@@ -170,7 +165,7 @@ class Program
                 Console.WriteLine("Условие выполняется. Входы-выходы:");
                 for (int i = 0; i < entriesCount; i++)
                 {
-                    Console.WriteLine("x(" + orderEntries[i] + ")" + entries[orderEntries[i]] + " - y(" + orderExits[i] + ")" + exits[orderExits[i]]);
+                    Console.WriteLine("x(" + (orderEntries[i] + 1) + ") - y(" + (orderExits[i] + 1) + ")");
                 }
             }
             else
@@ -182,8 +177,24 @@ class Program
         //foreach (var p in path) Console.WriteLine($"({p.x},{p.y})");
     }
 
-    static void PrintMaze(int[,] grid, int n, int m, int stop = -1)
+    static void PrintMaze(int[,] grid, int n, int m, int[] entries, int[] exits, int stop = -1)
     {
+        int entriesCount = 0;
+        for (int i = 0; i < m; i++)
+        {
+            if (grid[0, i] == 0)
+            {
+                Console.Write("x" + (entriesCount + 1));
+                entriesCount++;
+            }
+            else
+            {
+                Console.Write("  ");
+            }
+        }
+
+        Console.WriteLine();
+
         for (int i = 0; i < n; i++)
         {
             for (int j = 0; j < m; j++)
@@ -193,6 +204,21 @@ class Program
                 else Console.Write("  ");
             }
             Console.WriteLine();
+        }
+
+        entriesCount = 0;
+
+        for (int i = 0; i < m; i++)
+        {
+            if (grid[n-1, i] == 0)
+            {
+                Console.Write("y" + (entriesCount + 1));
+                entriesCount++;
+            }
+            else
+            {
+                Console.Write("  ");
+            }
         }
 
         Console.WriteLine();
@@ -538,12 +564,6 @@ class Program
         {
             order[i] = i;
         }
-
-        for (int i = 0; i < entriesCount; i++)
-        {
-            Console.Write(order[i]);
-        }
-        Console.WriteLine();
 
         for (int i = 0; i < entriesCount - 1; i++)
         {
