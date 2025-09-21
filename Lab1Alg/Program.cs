@@ -9,6 +9,7 @@ public class MazeGenerationResult
     public int[,] Grid { get;  }
     public int[] TopXs { get; }
     public int[] BottomXs { get; }
+
     public MazeGenerationResult(int[,] grid, int[] topXs, int[] bottomXs)
     {
         Grid = grid;
@@ -23,20 +24,23 @@ class Program
     static void Main(string[] args)
     {
         List<List<(int x, int y)>> paths = new List<List<(int x, int y)>>();
-        int n = 10, m = 10, entriesCount = 3;
-        int[] entries = { 1, 7, 4, 0, 0, 0, 0, 0, 0, 0 }, exits = { 5, 2, 9, 0, 0, 0, 0, 0, 0, 0 };
+        int n = 41, m = 13, entriesCount = 3;
+        int[] entries = { 31, 3, 7, 0, 0, 0, 0, 0, 0, 0 }, exits = { 13, 7, 35, 0, 0, 0, 0, 0, 0, 0 };
         int[,] maze =
         {
-            {1, 0, 1, 1, 0, 1, 1, 0, 1, 1 },
-            {1, 0, 0, 1, 0, 1, 0, 0, 1, 1 },
-            {1, 1, 0, 0, 0, 0, 1, 0, 0, 1 },
-            {1, 0, 0, 0, 1, 0, 1, 0, 1, 1 },
-            {1, 0, 1, 0, 1, 0, 1, 0, 0, 1 },
-            {1, 1, 1, 0, 1, 0, 0, 1, 0, 1 },
-            {1, 0, 1, 0, 0, 0, 1, 1, 0, 1 },
-            {1, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
-            {1, 1, 0, 1, 0, 0, 1, 0, 1, 0 },
-            {1, 1, 0, 1, 1, 0, 1, 1, 1, 0 },
+            {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
+            {1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1},
+            {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1},
+            {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1},
+            {1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1},
+            {1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+            {1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+            {1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1},
         };
 
         Console.WriteLine("1. Сгенерировать лабиринт");
@@ -76,6 +80,9 @@ class Program
                         exits[i] = mgr.BottomXs[i];
                     }
                     maze = mgr.Grid;
+                    for (int i = 0; i < mgr.BottomXs.Length; i++)
+                    {
+                    }
                     break;
                 case 2:
                     cycleExit = true;
@@ -141,23 +148,36 @@ class Program
         }
         else
         {
+            bool doBreak = false;
             for (int i = 0; i < entriesCount - 1; i++)
             {
-                for (int j = i + 1; j < entriesCount; j++)
-                {
 
-                    for (int k = 0;  k < paths[i].Count; k++)
+                if (!doBreak)
+                {
+                    for (int j = i + 1; j < entriesCount; j++)
                     {
-                        for (int h = 0; h < paths[j].Count; h++)
+
+                        for (int k = 0; k < paths[i].Count; k++)
                         {
-                            if (paths[i][k].x == paths[j][h].x && paths[i][k] == paths[j][h])
+                            if (doBreak) break;
+                            for (int h = 0; h < paths[j].Count; h++)
                             {
-                                canDoRef = false;
-                                Console.WriteLine("Пути " + (i + 1) + " и " + (j + 1) + " пересекаются в точке (" + paths[i][k].x + ", " + paths[i][k].y + ").");
+                                if (doBreak) break;
+                                if (paths[i][k].x == paths[j][h].x && paths[i][k] == paths[j][h])
+                                {
+                                    canDoRef = false;
+                                    //Console.WriteLine("Пути " + (i + 1) + " и " + (j + 1) + " пересекаются в точке (" + paths[i][k].x + ", " + paths[i][k].y + ").");
+                                    Console.WriteLine("Пути " + (i + 1) + " и " + (j + 1) + " пересекаются");
+                                    doBreak = true;
+                                    break;
+                                }
                             }
                         }
+                        doBreak = false;
                     }
+
                 }
+
             }
 
             if (canDoRef)
@@ -174,18 +194,24 @@ class Program
             }
         }
 
-        //foreach (var p in path) Console.WriteLine($"({p.x},{p.y})");
     }
 
     static void PrintMaze(int[,] grid, int n, int m, int[] entries, int[] exits, int stop = -1)
     {
-        int entriesCount = 0;
+        int num = 0;
         for (int i = 0; i < m; i++)
         {
             if (grid[0, i] == 0)
             {
-                Console.Write("x" + (entriesCount + 1));
-                entriesCount++;
+                for(int j = 0; j < exits.Length;  j++)
+                {
+                    if (i == entries[j])
+                    {
+                        num = j + 1;
+                        break;
+                    }
+                }
+                Console.Write("x" + num);
             }
             else
             {
@@ -206,14 +232,21 @@ class Program
             Console.WriteLine();
         }
 
-        entriesCount = 0;
+        num = 0;
 
         for (int i = 0; i < m; i++)
         {
             if (grid[n-1, i] == 0)
             {
-                Console.Write("y" + (entriesCount + 1));
-                entriesCount++;
+                for(int j = 0; j < exits.Length; j++)
+                {
+                    if (i == exits[j])
+                    {
+                        num = j + 1;
+                        break;
+                    }
+                }
+                Console.Write("y" + num);
             }
             else
             {
@@ -326,37 +359,32 @@ class Program
     {
         var rng = seed.HasValue ? new Random(seed.Value) : new Random();
 
-        // Приводим размеры к нечётным (чтобы правильно располагать клетку/стену)
         if (w % 2 == 0) w++;
         if (h % 2 == 0) h++;
 
-        int[,] grid = new int[h, w]; // grid[y,x]
+        int[,] grid = new int[h, w];
 
-        // Изначально всё — стены
         for (int y = 0; y < h; y++)
             for (int x = 0; x < w; x++)
                 grid[y, x] = 1;
 
-        int cellW = (w - 1) / 2; // число "логических" колонок
-        int cellH = (h - 1) / 2; // число "логических" строк
+        int cellW = (w - 1) / 2;
+        int cellH = (h - 1) / 2;
 
         if (pairs < 0) throw new ArgumentException("pairs must be >= 0");
         if (pairs > cellW) throw new ArgumentException($"pairs ({pairs}) cannot exceed number of columns {cellW}");
 
-        // --- Итеративный DFS (backtracker) для генерации базового идеального лабиринта ---
         int cells = cellW * cellH;
         var visited = new byte[cells];
         var stack = new int[cells];
         int stackSize = 0;
 
-        // Стартовая клетка — случайная логическая клетка (чтобы было разнообразие)
         int startCx = rng.Next(cellW);
         int startCy = rng.Next(cellH);
         int startIdx = startCy * cellW + startCx;
         stack[stackSize++] = startIdx;
         visited[startIdx] = 1;
 
-        // Отметим стартовую реальную клетку как проход
         grid[startCy * 2 + 1, startCx * 2 + 1] = 0;
 
         int[] dirX = { 0, 1, 0, -1 };
@@ -369,7 +397,6 @@ class Program
             int cx = cur % cellW;
             int cy = cur / cellW;
 
-            // перемешиваем направления
             for (int i = 0; i < 4; i++) order[i] = i;
             for (int i = 3; i > 0; i--)
             {
@@ -389,7 +416,6 @@ class Program
 
                 visited[nidx] = 1;
 
-                // реальные координаты
                 int rx = cx * 2 + 1;
                 int ry = cy * 2 + 1;
                 int rnx = nx * 2 + 1;
@@ -397,7 +423,6 @@ class Program
                 int wx = (rx + rnx) / 2;
                 int wy = (ry + rny) / 2;
 
-                // вырезаем стену и соседнюю клетку
                 grid[ry, rx] = 0;
                 grid[wy, wx] = 0;
                 grid[rny, rnx] = 0;
@@ -409,12 +434,10 @@ class Program
 
             if (!progressed)
             {
-                // backtrack
                 stackSize--;
             }
         }
 
-        // --- Добавляем случайные соединения (петли) ---
         for (int attempts = 0; attempts < extraConnections; attempts++)
         {
             int cx = rng.Next(cellW);
@@ -431,13 +454,11 @@ class Program
             int wx = (rx + rnx) / 2;
             int wy = (ry + rny) / 2;
 
-            // Защита: не трогаем периметр (ни левую/правую/верх/низ стену)
             if (wx <= 0 || wx >= w - 1 || wy <= 0 || wy >= h - 1) continue;
 
             grid[wy, wx] = 0;
         }
 
-        // --- Удаление тупиков (опционально) — не трогаем периметр ---
         if (removeDeadEndsPercent > 0)
         {
             int percent = Math.Clamp(removeDeadEndsPercent, 0, 100);
@@ -452,7 +473,6 @@ class Program
                         int rx = cx * 2 + 1;
                         int ry = cy * 2 + 1;
 
-                        // защита: не обрабатывать клетки на самой границе grid
                         if (rx <= 0 || rx >= w - 1 || ry <= 0 || ry >= h - 1) continue;
                         if (grid[ry, rx] != 0) continue;
 
@@ -464,7 +484,6 @@ class Program
 
                         if (deg == 1 && rng.Next(100) < percent)
                         {
-                            // попытаться удалить соседнюю стену (если она не на периметре)
                             int[] ord2 = { 0, 1, 2, 3 };
                             for (int i = 3; i > 0; i--)
                             {
@@ -495,23 +514,19 @@ class Program
             } while (changed);
         }
 
-        // --- Выбор верхних и нижних колонок независимо ---
         int[] topXs = Array.Empty<int>();
         int[] bottomXs = Array.Empty<int>();
         if (pairs > 0)
         {
-            // выбираем случайные уникальные колонки для верха
             var cols = Enumerable.Range(0, cellW).ToList();
             Shuffle(cols, rng);
             topXs = cols.Take(pairs).Select(cx => cx * 2 + 1).ToArray();
 
-            // и отдельно для низа
             cols = Enumerable.Range(0, cellW).ToList();
             Shuffle(cols, rng);
             bottomXs = cols.Take(pairs).Select(cx => cx * 2 + 1).ToArray();
         }
 
-        // --- Принудительно делаем всю границу стеной (на всякий случай) ---
         for (int x = 0; x < w; x++)
         {
             grid[0, x] = 1;
@@ -523,18 +538,17 @@ class Program
             grid[y, w - 1] = 1;
         }
 
-        // --- Пробиваем только выбранные отверстия (верх и низ) и соединяем их с внутренней частью ---
         foreach (var rx in topXs)
         {
             if (rx <= 0 || rx >= w - 1) continue;
-            grid[0, rx] = 0;           // край
-            if (1 < h) grid[1, rx] = 0; // внутренняя клетка под ним
+            grid[0, rx] = 0;
+            if (1 < h) grid[1, rx] = 0;
         }
         foreach (var rx in bottomXs)
         {
             if (rx <= 0 || rx >= w - 1) continue;
-            grid[h - 1, rx] = 0;         // край
-            if (h - 2 >= 0) grid[h - 2, rx] = 0; // внутренняя клетка над ним
+            grid[h - 1, rx] = 0;
+            if (h - 2 >= 0) grid[h - 2, rx] = 0;
         }
 
         return new MazeGenerationResult(grid, topXs, bottomXs);
