@@ -1,4 +1,20 @@
-﻿class Program
+﻿using System.Data.Common;
+
+struct SortResult
+{
+    public int[] mas;
+    public int comparesCount;
+    public int swapsCount;
+
+    public SortResult(int[] mas, int comparesCount, int swapsCount)
+    {
+        this.mas = mas;
+        this.comparesCount = comparesCount;
+        this.swapsCount = swapsCount;
+    }
+}
+
+class Program
 {
     public static void Main(string[] args)
     {
@@ -14,75 +30,105 @@
         }
 
         //QuickSort(mas, 0, mas.Length - 1);
-        HeapSort(mas);
+        SortResult res = QuickSort(mas, 0, mas.Length - 1);
 
         Console.WriteLine();
         for (int i = 0; i < mas.Length; i++)
         {
             Console.Write(mas[i] + "  ");
         }
+        Console.WriteLine("\nСравнений: " + res.comparesCount + "\nПерестановок: " + res.swapsCount);
     }
 
-    static int[] InsertionSort(int[] mas) //сортировка включением
+    static SortResult InsertionSort(int[] mas) //сортировка включением
     {
+        int comparesCount = 0;
+        int swapsCount = 0;
+
         for (int i = 1; i < mas.Length; i++)
-            for (int j = i; j > 0 && mas[j - 1] > mas[j]; j--) // пока j>0 и элемент j-1 > j 
-                Swap(ref mas[j], ref mas[j-1]);
-        return mas;
+        {
+            for (int j = i; j > 0 && mas[j - 1] > mas[j]; j--) // пока j>0 и элемент j-1 > j, переставляет пока больше
+            {
+                comparesCount++;
+                Swap(ref mas[j], ref mas[j - 1]);
+                swapsCount++;
+            }
+            comparesCount++;
+        }
+
+        return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    static int[] SelectionSort(int[] mas) //Сортировка выбором
+    static SortResult SelectionSort(int[] mas) //Сортировка выбором
     {
+        int comparesCount = 0;
+        int swapsCount = 0;
+
         for (int i = 0; i < mas.Length - 1; i++)
         {
             int minIndex = i;
             for (int j = i + 1; j < mas.Length; j++)
             {
-                if (mas[j] < mas[minIndex])
+                if (mas[j] < mas[minIndex]) //ищет минимальное число и ставит в начало
                 {
                     minIndex = j;
                 }
+                comparesCount++;
             }
             Swap(ref mas[i], ref mas[minIndex]);
+            swapsCount++;
         }
 
-        return mas;
+        return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    static int[] BubbleSort(int[] mas) //Сортировка обменом
+    static SortResult BubbleSort(int[] mas) //Сортировка обменом
     {
-        if (mas == null || mas.Length < 2) return mas;
+        int comparesCount = 0;
+        int swapsCount = 0;
+
+        if (mas == null || mas.Length < 2) return new SortResult(mas, 0, 0);
 
         int n = mas.Length;
         for (int i = 0; i < n - 1; i++)
         {
             bool swapped = false;
-            for (int j = 0; j < n - 1 - i; j++)
+            for (int j = 0; j < n - 1 - i; j++) 
             {
-                if (mas[j] > mas[j + 1])
+                if (mas[j] > mas[j + 1]) //сравнивает со следующим
                 {
                     Swap(ref mas[j], ref mas[j + 1]);
+                    swapsCount++;
                     swapped = true;
                 }
+                comparesCount++;
             }
 
             if (!swapped) break;
         }
 
-        return mas;
+        return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    static int[] QuickSort(int[] mas, int left, int right) //сортировка разделением
+    static SortResult QuickSort(int[] mas, int left, int right) //сортировка разделением, быстрая сортировка
     {
-        if (left >= right) return mas;
+        int comparesCount = 0;
+        int swapsCount = 0;
+
+        if (left >= right) return new SortResult(mas, 0, 0);
 
         int len = right - left + 1;
 
         Swap(ref mas[left + 1], ref mas[left]);
         Swap(ref mas[right - 1], ref mas[right]);
+        swapsCount += 2;
 
         if (mas[left] > mas[right])
+        {
             Swap(ref mas[left], ref mas[right]);
+            swapsCount++;
+        }
+        comparesCount++;
 
         int pivot1 = mas[left];
         int pivot2 = mas[right];
@@ -95,20 +141,32 @@
             if (mas[k] < pivot1)
             {
                 Swap(ref mas[k], ref mas[less]);
+                swapsCount++;
                 less++;
             }
-            else if (mas[k] > pivot2)
+            else
             {
-                while (mas[great] > pivot2 && k < great)
-                    great--;
-                Swap(ref mas[k], ref mas[great]);
-                great--;
-                if (mas[k] < pivot1)
+                comparesCount++;
+                if (mas[k] > pivot2)
                 {
-                    Swap(ref mas[k], ref mas[less]);
-                    less++;
+                    while (mas[great] > pivot2 && k < great)
+                    {
+                        comparesCount++;
+                        great--;
+                    }
+                    Swap(ref mas[k], ref mas[great]);
+                    swapsCount++;
+                    great--;
+                    if (mas[k] < pivot1)
+                    {
+                        Swap(ref mas[k], ref mas[less]);
+                        swapsCount++;
+                        less++;
+                    }
+                    comparesCount++;
                 }
             }
+            comparesCount++;
         }
 
         less--;
@@ -116,62 +174,85 @@
 
         Swap(ref mas[left], ref mas[less]);
         Swap(ref mas[right], ref mas[great]);
+        swapsCount += 2;
 
-        QuickSort(mas, left, less - 1);
+        SortResult res1 = QuickSort(mas, left, less - 1);
+        comparesCount += res1.comparesCount;
+        swapsCount += res1.swapsCount;
         if (pivot1 < pivot2)
-            QuickSort(mas, less + 1, great - 1);
-        QuickSort(mas, great + 1, right);
+        {
+            SortResult res2 = QuickSort(mas, less + 1, great - 1);
+            comparesCount += res2.comparesCount;
+            swapsCount += res2.swapsCount;
+        }
+        SortResult res3 = QuickSort(mas, great + 1, right);
+        comparesCount += res3.comparesCount;
+        swapsCount += res3.swapsCount;
 
-        return mas;
+        return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    static int[] HeapSort(int[] mas) //пирамидальная сортировка
+    static SortResult HeapSort(int[] mas) //пирамидальная сортировка
     {
-        if (mas == null || mas.Length < 2) return mas;
+        int comparesCount = 0;
+        int swapsCount = 0;
+
+        if (mas == null || mas.Length < 2) return new SortResult(mas, 0, 0);
 
         int n = mas.Length;
 
-        // Построение максимум-кучи (heap) — O(n)
         for (int i = Parent(n - 1); i >= 0; i--)
-            SiftDown(mas, i, n - 1);
-
-        // Извлекаем максимум по одному и ставим в конец
-        for (int end = n - 1; end > 0; end--)
         {
-            Swap(ref mas[0], ref mas [end]);        // максимум в конец
-            SiftDown(mas, 0, end - 1); // восстанавливаем heap на [0..end-1]
+            comparesCount++;
+            (int, int) res1 = SiftDown(mas, i, n - 1);
+            comparesCount += res1.Item1;
+            swapsCount += res1.Item2;
         }
 
-        return mas;
+        for (int end = n - 1; end > 0; end--)
+        {
+            Swap(ref mas[0], ref mas [end]);
+            swapsCount++;
+            (int, int) res2 = SiftDown(mas, 0, end - 1);
+            comparesCount += res2.Item1;
+            swapsCount += res2.Item2;
+        }
+
+        return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    // SiftDown: просеивание вниз элемента в диапазоне [start..end]
-    static void SiftDown(int[] mas, int start, int end)
+    static (int, int) SiftDown(int[] mas, int start, int end)
     {
         int root = start;
+        int comparesCount = 0;
+        int swapsCount = 0;
 
         while (true)
         {
+
             int leftChild = 2 * root + 1;
-            if (leftChild > end) break; // выхода из дерева
+            if (leftChild > end) break;
 
             int swapIdx = root;
 
-            // если левый ребёнок больше корня
             if (mas[swapIdx] < mas[leftChild])
                 swapIdx = leftChild;
+            comparesCount++;
 
-            // если есть правый ребёнок и он больше того, что выбран
             int rightChild = leftChild + 1;
             if (rightChild <= end && mas[swapIdx] < mas[rightChild])
                 swapIdx = rightChild;
+            comparesCount++;
 
             if (swapIdx == root)
-                break; // корень больше обоих детей — порядок восстановлен
+                break;
 
             Swap(ref mas[root], ref mas[swapIdx]);
-            root = swapIdx; // продолжить просеивание вниз
+            swapsCount++;
+            root = swapIdx;
         }
+
+        return (comparesCount, swapsCount);
     }
 
     static int Parent(int index) => (index - 1) / 2;
