@@ -26,18 +26,47 @@ class Program
         for (int i = 0; i < mas.Length; i++)
         {
             mas[i] = random.Next(201);
-            Console.Write(mas[i] + "  ");
         }
+        Console.WriteLine("Исходный массив: ");
+        PrintMas(mas);
 
-        //QuickSort(mas, 0, mas.Length - 1);
-        SortResult res = QuickSort(mas, 0, mas.Length - 1);
+        Console.WriteLine("Сортировка включением: ");
+        SortResult res1 = InsertionSort(mas);
+        PrintResult(mas, res1);
 
-        Console.WriteLine();
+        Console.WriteLine("Сортировка выбором: ");
+        SortResult res2 = SelectionSort(mas);
+        PrintResult(mas, res2);
+
+        Console.WriteLine("Сортировка обменом(пузырьком): ");
+        SortResult res3 = BubbleSort(mas);
+        PrintResult(mas, res3);
+
+        Console.WriteLine("Сортировка разделением(быстрая сортировка): ");
+        SortResult res4 = QuickSort(mas, 0, mas.Length - 1);
+        PrintResult(mas, res4);
+
+        Console.WriteLine("Пирамидальная сортировка: ");
+        SortResult res5 = HeapSort(mas);
+        PrintResult(mas, res5);
+    }
+
+    static void PrintMas(int[] mas)
+    {
+        foreach(int elem in mas)
+        {
+            Console.Write(elem + " ");
+        }
+        Console.WriteLine('\n');
+    }
+
+    static void PrintResult(int[] mas, SortResult res)
+    {
         for (int i = 0; i < mas.Length; i++)
         {
             Console.Write(mas[i] + "  ");
         }
-        Console.WriteLine("\nСравнений: " + res.comparesCount + "\nПерестановок: " + res.swapsCount);
+        Console.WriteLine("\nСравнений: " + res.comparesCount + "\nПерестановок: " + res.swapsCount + '\n');
     }
 
     static SortResult InsertionSort(int[] mas) //сортировка включением
