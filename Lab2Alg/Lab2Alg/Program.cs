@@ -69,8 +69,9 @@ class Program
         Console.WriteLine("\nСравнений: " + res.comparesCount + "\nПерестановок: " + res.swapsCount + '\n');
     }
 
-    static SortResult InsertionSort(int[] mas) //сортировка включением
+    static SortResult InsertionSort(int[] mas1) //сортировка включением
     {
+        int[] mas = mas1.ToArray();
         int comparesCount = 0;
         int swapsCount = 0;
 
@@ -88,8 +89,9 @@ class Program
         return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    static SortResult SelectionSort(int[] mas) //Сортировка выбором
+    static SortResult SelectionSort(int[] mas1) //Сортировка выбором
     {
+        int[] mas = mas1.ToArray();
         int comparesCount = 0;
         int swapsCount = 0;
 
@@ -111,8 +113,9 @@ class Program
         return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    static SortResult BubbleSort(int[] mas) //Сортировка обменом
+    static SortResult BubbleSort(int[] mas1) //Сортировка обменом
     {
+        int[] mas = mas1.ToArray();
         int comparesCount = 0;
         int swapsCount = 0;
 
@@ -124,13 +127,13 @@ class Program
             bool swapped = false;
             for (int j = 0; j < n - 1 - i; j++) 
             {
+                comparesCount++;
                 if (mas[j] > mas[j + 1]) //сравнивает со следующим
                 {
                     Swap(ref mas[j], ref mas[j + 1]);
                     swapsCount++;
                     swapped = true;
                 }
-                comparesCount++;
             }
 
             if (!swapped) break;
@@ -139,8 +142,9 @@ class Program
         return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    static SortResult QuickSort(int[] mas, int left, int right) //сортировка разделением, быстрая сортировка
+    static SortResult QuickSort(int[] mas1, int left, int right) //сортировка разделением, быстрая сортировка
     {
+        int[] mas = mas1.ToArray();
         int comparesCount = 0;
         int swapsCount = 0;
 
@@ -152,12 +156,12 @@ class Program
         Swap(ref mas[right - 1], ref mas[right]);
         swapsCount += 2;
 
+        comparesCount++;
         if (mas[left] > mas[right])
         {
             Swap(ref mas[left], ref mas[right]);
             swapsCount++;
         }
-        comparesCount++;
 
         int pivot1 = mas[left];
         int pivot2 = mas[right];
@@ -167,6 +171,7 @@ class Program
 
         for (int k = less; k <= great; k++)
         {
+            comparesCount++;
             if (mas[k] < pivot1)
             {
                 Swap(ref mas[k], ref mas[less]);
@@ -175,7 +180,6 @@ class Program
             }
             else
             {
-                comparesCount++;
                 if (mas[k] > pivot2)
                 {
                     while (mas[great] > pivot2 && k < great)
@@ -183,19 +187,19 @@ class Program
                         comparesCount++;
                         great--;
                     }
+                    comparesCount++;
                     Swap(ref mas[k], ref mas[great]);
                     swapsCount++;
                     great--;
+                    comparesCount++;
                     if (mas[k] < pivot1)
                     {
                         Swap(ref mas[k], ref mas[less]);
                         swapsCount++;
                         less++;
                     }
-                    comparesCount++;
                 }
             }
-            comparesCount++;
         }
 
         less--;
@@ -208,12 +212,15 @@ class Program
         SortResult res1 = QuickSort(mas, left, less - 1);
         comparesCount += res1.comparesCount;
         swapsCount += res1.swapsCount;
+
+        comparesCount++;
         if (pivot1 < pivot2)
         {
             SortResult res2 = QuickSort(mas, less + 1, great - 1);
             comparesCount += res2.comparesCount;
             swapsCount += res2.swapsCount;
         }
+
         SortResult res3 = QuickSort(mas, great + 1, right);
         comparesCount += res3.comparesCount;
         swapsCount += res3.swapsCount;
@@ -221,8 +228,9 @@ class Program
         return new SortResult(mas, comparesCount, swapsCount);
     }
 
-    static SortResult HeapSort(int[] mas) //пирамидальная сортировка
+    static SortResult HeapSort(int[] mas1) //пирамидальная сортировка
     {
+        int[] mas = mas1.ToArray();
         int comparesCount = 0;
         int swapsCount = 0;
 
