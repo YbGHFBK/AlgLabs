@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Text;
 
 struct SortResult
 {
@@ -137,6 +138,7 @@ class Program
             }
 
             if (!swapped) break;
+
         }
 
         return new SortResult(mas, comparesCount, swapsCount);
