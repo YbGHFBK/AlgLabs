@@ -46,12 +46,9 @@ public static class Program
                     foreach (char c in allowed)
                     {
                         int len = 1;
-                        while (j + len <= m && y[j] == c)
+                        while (j + len <= m && y[j + len - 1] == c)
                         {
-                            bool ok = true;
-                            for (int k = j; k < j + len; k++)
-                                if (y[k] != c) { ok = false; break; }
-                            if (ok) dp[i + 1, j + len] = true;
+                            dp[i + 1, j + len] = true;
                             len++;
                         }
                     }
